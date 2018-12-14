@@ -17,7 +17,7 @@ class Block{
     }
 
     static genesis(){
-        return new this('genesis', '-----', 'ajkd-ads1-fsdfl3-ljfkdsj1', []);
+        return new Block('genesis', '-----', 'ajkd-ads1-fsdfl3-ljfkdsj1', []);
     }
 
     static mineBlock(lastBlock, data){
@@ -25,12 +25,18 @@ class Block{
         const lastHash = lastBlock.hash;
         const hash = Block.hash(timestamp, lastHash, data);
 
-        return new this(timestamp, lastHash, hash, data);
+        return new Block(timestamp, lastHash, hash, data);
 
     }
 
     static hash(timestamp, lastHash, data){
         return SHA256(`${timestamp}${lastHash}${data}`).toString();
+    }
+
+    static blockHash(block){
+        const{ timestamp, lastHash, data} = block;
+
+        return Block.hash(timestamp, lastHash, data);
     }
 }
 

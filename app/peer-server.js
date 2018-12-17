@@ -32,9 +32,29 @@ class PeerServer {
     connectSocket(socket){
         this.sockets.push(socket);
         console.log('Socket connected');
+        this.messageHandler(socket);
+        this.sendChain(socket);
+    }
+
+    messageHandler(socket){
+        socket.on('message', message => {
+            const data = JSON.parse(message);
+            //console.log('data', data);
+            this.blockchain.replaceChain(data);
+        })
+    }
+
+    sendChain(socket){
+        socket.send(JSON.stringify(this.blockchain.chain));
+    }
+
+    syncChain(){
+        this.sockets.forEach(socket => {
+            this.sendChain(socket);
+        });
     }
 }
 
 module.exports = PeerServer;
 
-// Connect Peer eg: - HTTP_PORT=3002 PEER_PORT=5002 PEERS=ws://localhost:5001 npm run dev
+// Connect Peer eg: - HTTP_PORT=3003 PEER_PORT=5003 PEERS=ws://localhost:5001,ws://localhost:5002 npm run dev
